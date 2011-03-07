@@ -14,8 +14,7 @@
 
 class UrbiSound {
 public:
-    UrbiSound();
-    UrbiSound(const UrbiSound& orig);
+    UrbiSound(const std::string&);
     virtual ~UrbiSound();
     
     bool play();

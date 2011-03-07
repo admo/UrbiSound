@@ -7,12 +7,28 @@
 
 #include "UrbiSound.h"
 
-UrbiSound::UrbiSound() {
-}
-
-UrbiSound::UrbiSound(const UrbiSound& orig) {
+UrbiSound::UrbiSound(const std::string&) {
 }
 
 UrbiSound::~UrbiSound() {
+}
+
+bool UrbiSound::play() {
+    
+}
+bool UrbiSound::play(const std::string&) {
+    
+}
+void UrbiSound::pause() {
+        
+}
+bool UrbiSound::openDevice() {
+    
+}
+bool UrbiSound::closeDevice() {
+    
+}
+bool UrbiSound::isDeviceOpened() {
+    
 }
 
