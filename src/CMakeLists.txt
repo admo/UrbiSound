@@ -1,8 +1,15 @@
 find_package (SDL REQUIRED)
 find_package (SDL_sound REQUIRED)
 
-include_directories(${SDL_INCLUDE_DIR} ${SDL_SOUND_INCLUDE_DIR})
+if(NOT ENV{URBI_ROOT})
+    set(ENV{URBI_ROOT} /opt/urbi-sdk)
+endif()
+set (URBI_ROOT_DIR $ENV{URBI_ROOT} CACHE PATH "Path to the Urbi root directory.")
+find_package (Urbi REQUIRED)
 
-add_executable(sdlwave sdlwave.c)
+include_directories (${SDL_INCLUDE_DIR} ${SDL_SOUND_INCLUDE_DIR} ${URBI_INCLUDE_DIR})
 
-target_link_libraries(sdlwave ${SDL_LIBRARY} ${SDL_SOUND_LIBRARY})
+add_executable (sdlwave sdlwave.c)
+
+target_link_libraries (sdlwave ${SDL_LIBRARY} ${SDL_SOUND_LIBRARY})
+
