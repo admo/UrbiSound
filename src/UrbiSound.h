@@ -12,7 +12,7 @@
 
 #include <string>
 
-class UrbiSound {
+class UrbiSound : public urbi::UObject {
 public:
     UrbiSound(const std::string&);
     virtual ~UrbiSound();
