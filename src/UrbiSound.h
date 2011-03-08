@@ -17,16 +17,19 @@ public:
     UrbiSound(const std::string&);
     virtual ~UrbiSound();
     
-    bool play();
     bool play(const std::string&);
-    void pause();
+    void stop();
     bool openDevice();
     bool closeDevice();
+    
     bool isDeviceOpened();
+    bool isPlaying();
     
 private:
     bool deviceOpened;
 };
+
+UStart(UrbiSound);
 
 #endif	/* URBISOUND_H */
 
