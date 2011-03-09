@@ -10,6 +10,9 @@
 
 #include "urbi/uobject.hh"
 
+#include <SDL.h>
+#include <SDL/SDL_audio.h>
+
 #include <string>
 
 class UrbiSound : public urbi::UObject {
@@ -20,13 +23,15 @@ public:
     bool play(const std::string&);
     void stop();
     bool openDevice();
-    bool closeDevice();
+    void closeDevice();
     
     bool isDeviceOpened();
     bool isPlaying();
     
 private:
     bool deviceOpened;
+    
+    SDL_AudioSpec fmt;
 };
 
 UStart(UrbiSound);
