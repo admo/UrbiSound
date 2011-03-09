@@ -12,7 +12,19 @@
 using namespace urbi;
 using namespace std;
 
+void mixAudio(void *unused,  Uint8 *stream, int len) {
+    
+}
+
 UrbiSound::UrbiSound(const std::string& name) : UObject(name) {
+    // Configure SDL audio
+    fmt.freq = 44100;
+    fmt.format = AUDIO_S16;
+    fmt.channels = 2;
+    fmt.samples = 512;        /* A good value for games */
+    fmt.callback = mixAudio;
+    fmt.userdata = NULL;
+    
     //Bind the functions
     UBindFunction(UrbiSound, play);
     UBindFunction(UrbiSound, stop);
@@ -32,10 +44,16 @@ void UrbiSound::stop() {
     return;
 }
 bool UrbiSound::openDevice() {
-    return true;
+    cerr << "Opening device" << endl;
+    if (!deviceOpened)
+        deviceOpened = !SDL_OpenAudio(&fmt, NULL);
+    else
+        return false;
+    return deviceOpened;
 }
-bool UrbiSound::closeDevice() {
-    return true;
+void UrbiSound::closeDevice() {
+    if (deviceOpened)
+        SDL_CloseAudio();
 }
 bool UrbiSound::isDeviceOpened() {
     return true;
@@ -43,4 +61,3 @@ bool UrbiSound::isDeviceOpened() {
 bool UrbiSound::isPlaying() {
     return true;
 }
-
