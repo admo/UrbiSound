@@ -48,9 +48,6 @@ public:
         return mDataLen - mDataPos;
     }
 };
-bool SampleIsEmptyPredicate(const Sample& sample) {
-    return !sample.getDataLeft();
-}
 class SampleBelongsTo {
 private:
     const UrbiSound* mUrbiSound;
@@ -91,18 +88,20 @@ public:
 // Implementations
 void mixAudio(void *, Uint8 *stream, int len) {
     SampleList& sampleList = SDLSoundSingleton::getInstance().getSampleList();
-    for(SampleList::iterator i = sampleList.begin(); i != sampleList.end(); ++i) {
-        // Mozna sprawdzic czy jest zapauzowany:)
+    SampleList::iterator i = sampleList.begin();
+    while(i != sampleList.end()) {
         Uint32 amount = i->getDataLeft();
         amount = amount < len ? amount : len;
         SDL_MixAudio(stream, i->getData(amount), amount, SDL_MIX_MAXVOLUME);
-
+        
+        //Iteracja pętli oraz sprawdzenie czy w sample cos jeszcze zostalo
+        SampleList::iterator previous = i++;
+        if(!previous->getDataLeft())
+            sampleList.erase(previous);
     }
-    sampleList.remove_if(SampleIsEmptyPredicate);
+    
     if(sampleList.empty())
         SDL_PauseAudio(1);
-    
-    cerr << "mixAudio " << sampleList.size() << endl;
 }
 
 //------------------------- SDLSoundSingleton ----------------------------//
@@ -164,6 +163,7 @@ bool SDLSoundSingleton::play(const UrbiSound* owner, const string& file) {
     SDL_ConvertAudio(&cvt);
     SDL_FreeWAV(data);
     
+    stop(owner);
     SDL_LockAudio();
     Uint8Pointer sampleData(cvt.buf);
     sampleList.push_back(Sample(owner, sampleData, cvt.len_cvt));
@@ -175,7 +175,6 @@ bool SDLSoundSingleton::play(const UrbiSound* owner, const string& file) {
 
 void SDLSoundSingleton::stop(const UrbiSound* owner) {
     SDL_LockAudio();
-    cerr << "SDLSoundSingleton::stop(const UrbiSound* owner)" << sampleList.size() << endl;
     sampleList.remove_if(SampleBelongsTo(owner));
     SDL_UnlockAudio();
 }
@@ -201,7 +200,7 @@ UrbiSound::~UrbiSound() {
 }
 
 bool UrbiSound::play(const std::string& file) {
-    stop();
+    //stop();
     return SDLSoundSingleton::getInstance().play(this, file);
 }
 
