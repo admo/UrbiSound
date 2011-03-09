@@ -12,6 +12,6 @@ include_directories (${SDL_INCLUDE_DIR} ${SDL_SOUND_INCLUDE_DIR} ${URBI_INCLUDE_
 add_library (urbisound SHARED UrbiSound.cpp)
 target_link_libraries (urbisound ${URBI_LIBRARIES} ${SDL_LIBRARY} ${SDL_SOUND_LIBRARY})
 
-add_executable (sdlwave sdlwave.c)
-target_link_libraries (sdlwave ${SDL_LIBRARY} ${SDL_SOUND_LIBRARY})
+#add_executable (sdlwave sdlwave.cpp)
+#target_link_libraries (sdlwave ${URBI_LIBRARIES} ${SDL_LIBRARY} ${SDL_SOUND_LIBRARY} urbisound)
 
