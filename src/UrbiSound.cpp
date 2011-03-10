@@ -204,7 +204,6 @@ UrbiSound::UrbiSound(const std::string& name) : UObject(name) {
     //Bind the functions
     UBindFunction(UrbiSound, play);
     UBindFunction(UrbiSound, stop);
-    UBindFunction(UrbiSound, isDeviceOpened);
     UBindFunction(UrbiSound, isPlaying);
 }
 
@@ -212,17 +211,12 @@ UrbiSound::~UrbiSound() {
 }
 
 bool UrbiSound::play(const std::string& file) {
-    //stop();
     return SDLSoundSingleton::getInstance().play(this, file);
 }
 
 void UrbiSound::stop() {
     SDLSoundSingleton::getInstance().stop(this);
     return;
-}
-
-bool UrbiSound::isDeviceOpened() {
-    return true;
 }
 
 bool UrbiSound::isPlaying() {

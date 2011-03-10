@@ -19,8 +19,7 @@ public:
     
     bool play(const std::string&);
     void stop();
-    
-    bool isDeviceOpened();
+    //TODO: Pause function?
     bool isPlaying();
 };
 
