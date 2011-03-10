@@ -123,6 +123,7 @@ SDLSoundSingleton& SDLSoundSingleton::getInstance() {
 }
 
 bool SDLSoundSingleton::openDevice() {
+    cerr << "SDLSoundSingleton::openDevice()" << endl;
     if (!isOpened()) {
         isOpened_ = !SDL_OpenAudio(&fmt, NULL);
     }
@@ -131,6 +132,7 @@ bool SDLSoundSingleton::openDevice() {
 }
 
 void SDLSoundSingleton::closeDevice() {
+    cerr << "SDLSoundSingleton::closeDevice()" << endl;
     if (isOpened()) {
         isOpened_ = false;
         SDL_CloseAudio();
@@ -138,10 +140,12 @@ void SDLSoundSingleton::closeDevice() {
 }
 
 bool SDLSoundSingleton::isOpened() {
+    cerr << "SDLSoundSingleton::isOpened()" << endl;
     return isOpened_;
 }
 
 bool SDLSoundSingleton::play(const UrbiSound* owner, const string& file) {
+    cerr << "SDLSoundSingleton::play(" << this << ", " << file << ")" << endl;
     if(!isOpened())
         return false;
     
@@ -149,7 +153,7 @@ bool SDLSoundSingleton::play(const UrbiSound* owner, const string& file) {
     Uint8 *data;
     Uint32 dlen;
     if (SDL_LoadWAV(file.c_str(), &wave, &data, &dlen) == NULL) {
-        cerr << "Couldn't load " << file << endl;
+        cerr << "Couldn't load " << file << ": " << SDL_GetError() << endl;
         return false;
     }
 
@@ -173,6 +177,7 @@ bool SDLSoundSingleton::play(const UrbiSound* owner, const string& file) {
 }
 
 void SDLSoundSingleton::stop(const UrbiSound* owner) {
+    cerr << "SDLSoundSingleton::stop(" << this << ")" << endl;
     SDL_LockAudio();
     sampleList.remove_if(SampleBelongsTo(owner));
     SDL_UnlockAudio();
