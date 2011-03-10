@@ -11,6 +11,7 @@
 #include <SDL/SDL_audio.h>
 
 #include <boost/shared_ptr.hpp>
+#include <boost/noncopyable.hpp>
 
 #include <iostream>
 #include <vector>
@@ -60,11 +61,9 @@ public:
 
 typedef list<Sample> SampleList;
 
-class SDLSoundSingleton {
+class SDLSoundSingleton : private boost::noncopyable {
 private:
     SDLSoundSingleton();
-    SDLSoundSingleton(const SDLSoundSingleton&);
-    SDLSoundSingleton& operator=(const SDLSoundSingleton&);
     
     SDL_AudioSpec fmt;
     bool isOpened_;
