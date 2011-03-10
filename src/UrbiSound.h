@@ -19,8 +19,6 @@ public:
     
     bool play(const std::string&);
     void stop();
-    bool openDevice();
-    void closeDevice();
     
     bool isDeviceOpened();
     bool isPlaying();
