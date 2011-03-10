@@ -65,12 +65,14 @@ class SDLSoundSingleton : private boost::noncopyable {
 private:
     SDLSoundSingleton();
     
-    SDL_AudioSpec fmt;
-    bool isOpened_;
+    SDL_AudioSpec mFMT;
+    bool mIsOpened;
     
-    SampleList sampleList;
+    SampleList mSampleList;
     
 public:
+    ~SDLSoundSingleton();
+    
     static SDLSoundSingleton& getInstance();
    
     bool openDevice();
@@ -105,16 +107,21 @@ void mixAudio(void *, Uint8 *stream, int len) {
 
 //------------------------- SDLSoundSingleton ----------------------------//
 
-SDLSoundSingleton::SDLSoundSingleton() : isOpened_(false) {
+SDLSoundSingleton::SDLSoundSingleton() : mIsOpened(false) {
     cerr << "SDLSoundSingleton::SDLSoundSingleton()" << endl;
 
     /* Set 16-bit stereo audio at 22Khz */
-    fmt.freq = 44100;
-    fmt.format = AUDIO_S16;
-    fmt.channels = 2;
-    fmt.samples = 512; /* A good value for games */
-    fmt.callback = mixAudio;
-    fmt.userdata = NULL;
+    mFMT.freq = 44100;
+    mFMT.format = AUDIO_S16;
+    mFMT.channels = 2;
+    mFMT.samples = 512; /* A good value for games */
+    mFMT.callback = mixAudio;
+    mFMT.userdata = NULL;
+}
+
+SDLSoundSingleton::~SDLSoundSingleton() {
+    cerr << "SDLSoundSingleton::~SDLSoundSingleton()" << endl;
+    SDL_CloseAudio();
 }
 
 SDLSoundSingleton& SDLSoundSingleton::getInstance() {
@@ -125,28 +132,31 @@ SDLSoundSingleton& SDLSoundSingleton::getInstance() {
 inline bool SDLSoundSingleton::openDevice() {
     cerr << "SDLSoundSingleton::openDevice()" << endl;
     if (!isOpened()) {
-        isOpened_ = !SDL_OpenAudio(&fmt, NULL);
+        if(SDL_OpenAudio(&mFMT, NULL) < 0) {
+            cerr << "Could'nt open audio: " <<SDL_GetError() << endl;
+            return false;
+        }
     }
         
-    return isOpened();
+    return (mIsOpened = true);
 }
 
 inline void SDLSoundSingleton::closeDevice() {
     cerr << "SDLSoundSingleton::closeDevice()" << endl;
     if (isOpened()) {
-        isOpened_ = false;
+        mIsOpened = false;
         SDL_CloseAudio();
     }
 }
 
 inline bool SDLSoundSingleton::isOpened() {
     cerr << "SDLSoundSingleton::isOpened()" << endl;
-    return isOpened_;
+    return mIsOpened;
 }
 
 bool SDLSoundSingleton::play(const UrbiSound* owner, const string& file) {
     cerr << "SDLSoundSingleton::play(" << owner << ", " << file << ")" << endl;
-    if(!isOpened())
+    if(!openDevice())
         return false;
     
     SDL_AudioSpec wave;
@@ -169,7 +179,7 @@ bool SDLSoundSingleton::play(const UrbiSound* owner, const string& file) {
     stop(owner);
     SDL_LockAudio();
     Uint8Pointer sampleData(cvt.buf);
-    sampleList.push_back(Sample(owner, sampleData, cvt.len_cvt));
+    mSampleList.push_back(Sample(owner, sampleData, cvt.len_cvt));
     SDL_PauseAudio(0);
     SDL_UnlockAudio();
     
@@ -179,12 +189,12 @@ bool SDLSoundSingleton::play(const UrbiSound* owner, const string& file) {
 inline void SDLSoundSingleton::stop(const UrbiSound* owner) {
     cerr << "SDLSoundSingleton::stop(" << owner << ")" << endl;
     SDL_LockAudio();
-    sampleList.remove_if(SampleBelongsTo(owner));
+    mSampleList.remove_if(SampleBelongsTo(owner));
     SDL_UnlockAudio();
 }
 
 inline SampleList &SDLSoundSingleton::getSampleList() {
-    return sampleList;
+    return mSampleList;
 }
 
 
@@ -194,8 +204,6 @@ UrbiSound::UrbiSound(const std::string& name) : UObject(name) {
     //Bind the functions
     UBindFunction(UrbiSound, play);
     UBindFunction(UrbiSound, stop);
-    UBindFunction(UrbiSound, openDevice);
-    UBindFunction(UrbiSound, closeDevice);
     UBindFunction(UrbiSound, isDeviceOpened);
     UBindFunction(UrbiSound, isPlaying);
 }
@@ -211,14 +219,6 @@ bool UrbiSound::play(const std::string& file) {
 void UrbiSound::stop() {
     SDLSoundSingleton::getInstance().stop(this);
     return;
-}
-
-bool UrbiSound::openDevice() {
-    return SDLSoundSingleton::getInstance().openDevice();
-}
-
-void UrbiSound::closeDevice() {
-    SDLSoundSingleton::getInstance().closeDevice();
 }
 
 bool UrbiSound::isDeviceOpened() {
