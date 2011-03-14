@@ -7,8 +7,8 @@
 
 #include "UrbiSound.h"
 
-#include <SDL.h>
-#include <SDL/SDL_audio.h>
+#include "SDL.h"
+#include "SDL_audio.h"
 
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
