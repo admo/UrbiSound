@@ -1,5 +1,4 @@
 find_package (SDL REQUIRED)
-find_package (SDL_sound REQUIRED)
 
 if(NOT ENV{URBI_ROOT})
     set(ENV{URBI_ROOT} /opt/urbi-sdk)
@@ -11,7 +10,7 @@ find_package (Urbi REQUIRED)
 set (BOOST_ROOT ${URBI_ROOT_DIR})
 find_package (Boost REQUIRED)
 
-include_directories (${SDL_INCLUDE_DIR} ${SDL_SOUND_INCLUDE_DIR} ${URBI_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
+include_directories (${SDL_INCLUDE_DIR} ${URBI_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 
 add_library (urbisound SHARED UrbiSound.cpp)
-target_link_libraries (urbisound ${URBI_LIBRARIES} ${SDL_LIBRARY} ${SDL_SOUND_LIBRARY} ${Boost_LIBRARIES})
+target_link_libraries (urbisound ${URBI_LIBRARIES} ${SDL_LIBRARY} ${Boost_LIBRARIES})
