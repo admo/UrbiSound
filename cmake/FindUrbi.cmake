@@ -170,6 +170,7 @@ foreach(_urbi_lib ${URBI_LIBRARIES})
   get_filename_component(_urbi_lib_path "${_urbi_lib}" PATH)
   list(APPEND URBI_LIBRARY_DIRS ${_urbi_lib_path})
 endforeach(_urbi_lib)
+list(REMOVE_DUPLICATES URBI_LIBRARY_DIRS)
 
 # =========== #
 # Executables #
