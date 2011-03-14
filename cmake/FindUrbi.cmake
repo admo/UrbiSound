@@ -72,6 +72,8 @@ set(DETECTED_URBI_ROOT_ARCHI mingw32)
 
 if(UNIX)
   set(DETECTED_URBI_ROOT_ARCHI i686-pc-linux-gnu)
+else()
+  add_definitions(-DBOOST_ALL_DYN_LINK)
 endif()
 
 set(URBI_ROOT_ARCHI ${DETECTED_URBI_ROOT_ARCHI}
@@ -270,6 +272,7 @@ urbi_version()
 # Finalization #
 # ============ #
 
+link_directories (${URBI_LIBRARY_DIRS})
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Urbi DEFAULT_MSG
   URBI_VERSION_STRING
