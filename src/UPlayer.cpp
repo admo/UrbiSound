@@ -5,7 +5,7 @@
  * Created on 7 marzec 2011, 11:02
  */
 
-#include "UrbiSound.h"
+#include "UPlayer.h"
 
 #include "SDL.h"
 #include "SDL_audio.h"
