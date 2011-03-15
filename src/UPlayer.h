@@ -10,6 +10,8 @@
 
 #include "urbi/uobject.hh"
 
+#include <boost/thread/mutex.hpp>
+
 #include <string>
 
 class UPlayer : public urbi::UObject {
@@ -21,6 +23,10 @@ public:
     void stop();
     //TODO: Pause function?
     bool isPlaying();
+    
+    void lockPlay(bool lock) const;
+private:
+    mutable boost::mutex mLockPlay;
 };
 
 UStart(UPlayer);
