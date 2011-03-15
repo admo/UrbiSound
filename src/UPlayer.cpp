@@ -34,7 +34,12 @@ private:
 public:
     Sample(const UPlayer* owner, Uint8Pointer data, Uint32 dataLen)
     : mOwner(owner), mData(data), mDataLen(dataLen), mDataPos(0) {
-	}
+        mOwner->lockPlay(true);
+    }
+    
+    ~Sample() {
+        mOwner->lockPlay(false);
+    }
     
     const UPlayer* getOwner() const {
         return mOwner;
@@ -50,17 +55,20 @@ public:
         return mDataLen - mDataPos;
     }
 };
+
+typedef shared_ptr<Sample> SamplePointer;
+
 class SampleBelongsTo {
 private:
     const UPlayer* mUrbiSound;
 public:
     SampleBelongsTo(const UPlayer* urbiSound) : mUrbiSound(urbiSound) { }
-    bool operator() (const Sample& sample) {
-        return mUrbiSound == sample.getOwner();
+    bool operator() (const SamplePointer& sample) {
+        return mUrbiSound == sample->getOwner();
     }
 };
 
-typedef list<Sample> SampleList;
+typedef list<SamplePointer> SampleList;
 
 class SDLSoundSingleton : private boost::noncopyable {
 private:
@@ -92,13 +100,13 @@ void mixAudio(void *, Uint8 *stream, int len) {
     SampleList& sampleList = SDLSoundSingleton::getInstance().getSampleList();
     SampleList::iterator i = sampleList.begin();
     while(i != sampleList.end()) {
-        int amount = static_cast<int>(i->getDataLeft());
+        int amount = static_cast<int>((*i)->getDataLeft());
         amount = amount < len ? amount : len;
-        SDL_MixAudio(stream, i->getData(amount), amount, SDL_MIX_MAXVOLUME);
+        SDL_MixAudio(stream, (*i)->getData(amount), amount, SDL_MIX_MAXVOLUME);
         
         //Iteracja pętli oraz sprawdzenie czy w sample cos jeszcze zostalo
         SampleList::iterator previous = i++;
-        if(!previous->getDataLeft())
+        if(!(*previous)->getDataLeft())
             sampleList.erase(previous);
     }
     
@@ -174,7 +182,8 @@ bool SDLSoundSingleton::play(const UPlayer* owner, const string& file) {
     stop(owner);
     SDL_LockAudio();
     Uint8Pointer sampleData(cvt.buf);
-    mSampleList.push_back(Sample(owner, sampleData, cvt.len_cvt));
+    SamplePointer samplePointer(new Sample(owner, sampleData, cvt.len_cvt));
+    mSampleList.push_back(samplePointer);
     SDL_PauseAudio(0);
     SDL_UnlockAudio();
     
@@ -205,7 +214,10 @@ UPlayer::~UPlayer() {
 }
 
 bool UPlayer::play(const std::string& file) {
-    return SDLSoundSingleton::getInstance().play(this, file);
+    mLockPlay.unlock();
+    bool ret = SDLSoundSingleton::getInstance().play(this, file);
+    mLockPlay.lock();
+    return ret;
 }
 
 void UPlayer::stop() {
@@ -215,4 +227,11 @@ void UPlayer::stop() {
 
 bool UPlayer::isPlaying() {
     return true;
+}
+
+void UPlayer::lockPlay(bool lock) const {
+    if (lock)
+        mLockPlay.lock();
+    else
+        mLockPlay.unlock();
 }
