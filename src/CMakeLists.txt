@@ -12,5 +12,5 @@ find_package (Boost REQUIRED)
 
 include_directories (${SDL_INCLUDE_DIR} ${URBI_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 
-add_library (urbisound MODULE UrbiSound.cpp)
-target_link_libraries (urbisound ${URBI_LIBRARIES} ${SDL_LIBRARY})
+add_library (uplayer MODULE UPlayer.cpp)
+target_link_libraries (uplayer ${URBI_LIBRARIES} ${SDL_LIBRARY})
