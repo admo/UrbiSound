@@ -12,10 +12,10 @@
 
 #include <string>
 
-class UrbiSound : public urbi::UObject {
+class UPlayer : public urbi::UObject {
 public:
-    UrbiSound(const std::string&);
-    virtual ~UrbiSound();
+    UPlayer(const std::string&);
+    virtual ~UPlayer();
     
     bool play(const std::string&);
     void stop();
@@ -23,7 +23,7 @@ public:
     bool isPlaying();
 };
 
-UStart(UrbiSound);
+UStart(UPlayer);
 
 #endif	/* URBISOUND_H */
 
