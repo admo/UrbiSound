@@ -30,13 +30,13 @@ private:
     Uint8Pointer mData;
     Uint32 mDataLen;
     Uint32 mDataPos;
-    const USound* mOwner;
+    const UrbiSound* mOwner;
 public:
-    Sample(const USound* owner, Uint8Pointer data, Uint32 dataLen)
+    Sample(const UrbiSound* owner, Uint8Pointer data, Uint32 dataLen)
     : mOwner(owner), mData(data), mDataLen(dataLen), mDataPos(0) {
 	}
     
-    const USound* getOwner() const {
+    const UrbiSound* getOwner() const {
         return mOwner;
     }
     
@@ -52,9 +52,9 @@ public:
 };
 class SampleBelongsTo {
 private:
-    const USound* mUrbiSound;
+    const UrbiSound* mUrbiSound;
 public:
-    SampleBelongsTo(const USound* urbiSound) : mUrbiSound(urbiSound) { }
+    SampleBelongsTo(const UrbiSound* urbiSound) : mUrbiSound(urbiSound) { }
     bool operator() (const Sample& sample) {
         return mUrbiSound == sample.getOwner();
     }
@@ -79,12 +79,12 @@ public:
     bool openDevice();
     void closeDevice();
     bool isOpened();
-    bool stopSample(const USound* owner);
+    bool stopSample(const UrbiSound* owner);
     
     SampleList &getSampleList();
     void addSample(const Sample& sample);
-    bool play(const USound* owner, const string& file);
-    void stop(const USound* owner);
+    bool play(const UrbiSound* owner, const string& file);
+    void stop(const UrbiSound* owner);
 };
 
 // Implementations
@@ -150,7 +150,7 @@ inline bool SDLSoundSingleton::isOpened() {
     return mIsOpened;
 }
 
-bool SDLSoundSingleton::play(const USound* owner, const string& file) {
+bool SDLSoundSingleton::play(const UrbiSound* owner, const string& file) {
     if(!openDevice())
         return false;
     
@@ -181,7 +181,7 @@ bool SDLSoundSingleton::play(const USound* owner, const string& file) {
     return true;
 }
 
-inline void SDLSoundSingleton::stop(const USound* owner) {
+inline void SDLSoundSingleton::stop(const UrbiSound* owner) {
     SDL_LockAudio();
     mSampleList.remove_if(SampleBelongsTo(owner));
     SDL_UnlockAudio();
@@ -194,25 +194,25 @@ inline SampleList &SDLSoundSingleton::getSampleList() {
 
 //------------------------- UrbiSound ----------------------------//
 
-USound::USound(const std::string& name) : UObject(name) {
+UrbiSound::UrbiSound(const std::string& name) : UObject(name) {
     //Bind the functions
-    UBindFunction(USound, play);
-    UBindFunction(USound, stop);
-    UBindFunction(USound, isPlaying);
+    UBindFunction(UrbiSound, play);
+    UBindFunction(UrbiSound, stop);
+    UBindFunction(UrbiSound, isPlaying);
 }
 
-USound::~USound() {
+UrbiSound::~UrbiSound() {
 }
 
-bool USound::play(const std::string& file) {
+bool UrbiSound::play(const std::string& file) {
     return SDLSoundSingleton::getInstance().play(this, file);
 }
 
-void USound::stop() {
+void UrbiSound::stop() {
     SDLSoundSingleton::getInstance().stop(this);
     return;
 }
 
-bool USound::isPlaying() {
+bool UrbiSound::isPlaying() {
     return true;
 }
