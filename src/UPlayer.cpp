@@ -205,7 +205,7 @@ inline SampleList &SDLSoundSingleton::getSampleList() {
 
 UPlayer::UPlayer(const std::string& name) : UObject(name) {
     //Bind the functions
-    UBindFunction(UPlayer, play);
+    UBindThreadedFunction(UPlayer, play, LOCK_NONE);
     UBindFunction(UPlayer, stop);
     UBindFunction(UPlayer, isPlaying);
 }
@@ -214,9 +214,9 @@ UPlayer::~UPlayer() {
 }
 
 bool UPlayer::play(const std::string& file) {
-    mLockPlay.unlock();
     bool ret = SDLSoundSingleton::getInstance().play(this, file);
     mLockPlay.lock();
+    mLockPlay.unlock();
     return ret;
 }
 
