@@ -16,6 +16,7 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <algorithm>
 
 using namespace urbi;
 using namespace std;
@@ -93,6 +94,7 @@ public:
     void addSample(const Sample& sample);
     bool play(const UPlayer* owner, const string& file);
     void stop(const UPlayer* owner);
+    bool isPlaying(const UPlayer* owner);
 };
 
 // Implementations
@@ -196,6 +198,12 @@ inline void SDLSoundSingleton::stop(const UPlayer* owner) {
     SDL_UnlockAudio();
 }
 
+bool SDLSoundSingleton::isPlaying(const UPlayer* owner) {
+    return find_if(mSampleList.begin(),
+            mSampleList.end(),
+            SampleBelongsTo(owner)) != mSampleList.end();
+}
+
 inline SampleList &SDLSoundSingleton::getSampleList() {
     return mSampleList;
 }
@@ -226,7 +234,7 @@ void UPlayer::stop() {
 }
 
 bool UPlayer::isPlaying() {
-    return true;
+    return SDLSoundSingleton::getInstance().isPlaying(this);
 }
 
 void UPlayer::lockPlay(bool lock) const {
