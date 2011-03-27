@@ -1,0 +1,27 @@
+echo("Creating two instances of UPlayer.");
+var player1 = UPlayer.new();
+var player2 = UPlayer.new();
+
+echo("Test playing sounds one by one.");
+player1.play("@CMAKE_CURRENT_SOURCE_DIR@/bass-c4.wav");
+player1.play("@CMAKE_CURRENT_SOURCE_DIR@/shamisen-c4.wav");
+
+sleep(0.5);
+echo("Test playing sounds simultaneously.");
+player1.play("@CMAKE_CURRENT_SOURCE_DIR@/bass-c4.wav"), player2.play("@CMAKE_CURRENT_SOURCE_DIR@/shamisen-c4.wav");
+
+sleep(0.5);
+echo("Test stopping played sounds after 1 second.");
+player1.play("@CMAKE_CURRENT_SOURCE_DIR@/bass-c4.wav"), player2.play("@CMAKE_CURRENT_SOURCE_DIR@/shamisen-c4.wav"), sleep(1.0);
+player1.stop(), player2.stop();
+
+sleep(0.5);
+echo("Test interrupting played sound by another (the same file).");
+player1.play("@CMAKE_CURRENT_SOURCE_DIR@/bass-c4.wav"), sleep(1.0); player1.play("@CMAKE_CURRENT_SOURCE_DIR@/bass-c4.wav");
+
+sleep(0.5);
+echo("Test interrupting played sound by another (different file).");
+player1.play("@CMAKE_CURRENT_SOURCE_DIR@/bass-c4.wav"), sleep(1.0); player1.play("@CMAKE_CURRENT_SOURCE_DIR@/shamisen-c4.wav");
+
+echo("Tests completed. Bye!");
+shutdown;
