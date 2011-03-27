@@ -5,3 +5,4 @@ project (UPlayer)
 set(CMAKE_MODULE_PATH ${UPlayer_SOURCE_DIR}/cmake)
 
 add_subdirectory (src)
+add_subdirectory (test)
