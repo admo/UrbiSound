@@ -1,3 +1,6 @@
+echo("Loading uplayer library");
+loadModule("@UPLAYER_LIB@");
+
 echo("Creating two instances of UPlayer.");
 var player1 = UPlayer.new();
 var player2 = UPlayer.new();
