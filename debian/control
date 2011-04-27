@@ -1,0 +1,14 @@
+Source: urbisound2.7
+Priority: extra
+Maintainer: Adam Oleksy <adam.oleksy@pwr.wroc.pl>
+Build-Depends: debhelper (>= 7), cmake, urbi2.7-dev, libboost-dev, libsdl1.2-dev
+Standards-Version: 3.8.3
+Section: libs
+Homepage: https://github.com/admo/UrbiSound
+
+Package: urbisound2.7
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>
