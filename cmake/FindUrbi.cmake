@@ -72,8 +72,6 @@ set(DETECTED_URBI_ROOT_ARCHI mingw32)
 
 if(UNIX)
   set(DETECTED_URBI_ROOT_ARCHI i686-pc-linux-gnu)
-else()
-  add_definitions(-DBOOST_ALL_DYN_LINK)
 endif()
 
 set(URBI_ROOT_ARCHI ${DETECTED_URBI_ROOT_ARCHI}
@@ -81,13 +79,17 @@ set(URBI_ROOT_ARCHI ${DETECTED_URBI_ROOT_ARCHI}
 
 message(STATUS "URBI_ROOT_ARCHI '${URBI_ROOT_ARCHI}'")
 
-if(NOT URBI_ROOT_DIR)
-  list(APPEND _urbi_INCLUDE_SEARCH_DIR ${URBI_ROOT}/include)
+if(URBI_ROOT_DIR)
+  list(APPEND _urbi_INCLUDE_SEARCH_DIR ${URBI_ROOT_DIR}/include)
   list(APPEND _urbi_LIBRARY_SEARCH_DIR
-    ${URBI_ROOT}/bin
-    ${URBI_ROOT}/gostai/core/${URBI_ROOT_ARCHI}/engine
-    ${URBI_ROOT}/gostai/engine
-    ${URBI_ROOT}/lib
+    ${URBI_ROOT_DIR}/bin
+    ${URBI_ROOT_DIR}/gostai/core/${URBI_ROOT_ARCHI}/engine
+    ${URBI_ROOT_DIR}/gostai/engine
+    ${URBI_ROOT_DIR}/lib
+    ${URBI_ROOT_DIR}/lib/gostai
+    ${URBI_ROOT_DIR}/lib/gostai/engine
+    ${URBI_ROOT_DIR}/lib/gostai/uobjects
+    ${URBI_ROOT_DIR}/lib/gostai/uobjects/urbi
     )
   list(APPEND _urbi_EXECUTABLE_SEARCH_DIR ${URBI_ROOT}/bin)
 endif()
@@ -172,7 +174,6 @@ foreach(_urbi_lib ${URBI_LIBRARIES})
   get_filename_component(_urbi_lib_path "${_urbi_lib}" PATH)
   list(APPEND URBI_LIBRARY_DIRS ${_urbi_lib_path})
 endforeach(_urbi_lib)
-list(REMOVE_DUPLICATES URBI_LIBRARY_DIRS)
 
 # =========== #
 # Executables #
@@ -272,7 +273,6 @@ urbi_version()
 # Finalization #
 # ============ #
 
-link_directories (${URBI_LIBRARY_DIRS})
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Urbi DEFAULT_MSG
   URBI_VERSION_STRING
