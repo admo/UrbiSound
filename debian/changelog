@@ -1,5 +1,5 @@
-urbisound2.7 (0.0.1-1) unstable; urgency=low
+urbisound2.7 (0.0.1-0ubuntu0ppa1~lucid1) lucid; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Initial release
 
- -- Adam Oleksy <adam.oleksy@pwr.wroc.pl>  Wed, 27 Apr 2011 14:34:21 +0200
+ -- Adam Oleksy <adam.oleksy@pwr.wroc.pl>  Wed, 27 Apr 2011 14:49:20 +0200
