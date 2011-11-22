@@ -13,4 +13,4 @@ set_target_properties (uplayer PROPERTIES
   VERSION 0.0.1
   SOVERSION 0.0.1)
 
-install (TARGETS uplayer DESTINATION lib/lib/gostai/uobjects COMPONENT libraries)
+install (TARGETS uplayer DESTINATION lib/gostai/uobjects COMPONENT libraries)
