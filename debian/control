@@ -1,7 +1,7 @@
 Source: liburbisound2.7
 Priority: extra
 Maintainer: Adam Oleksy <adam.oleksy@pwr.wroc.pl>
-Build-Depends: debhelper (>= 7), cmake, urbi2.7-dev, libboost-dev, libsdl1.2-dev
+Build-Depends: debhelper (>= 7), cmake, urbi-dev, libboost-dev, libsdl1.2-dev
 Standards-Version: 3.8.3
 Section: libs
 Homepage: https://github.com/admo/UrbiSound
